@@ -27,7 +27,7 @@ Pod::Spec.new do |s|
 
   s.subspec "UI" do |ss|
     ss.dependency 'PhoneKit/Core'
-    ss.dependency 'JCDialPad', :git => 'https://github.com/sidmclaughlin/JCDialPad.git'
+    ss.dependency 'JCDialPad'
     ss.dependency 'FontasticIcons'
     ss.source_files = 'Pod/Classes/UI/'
   end
