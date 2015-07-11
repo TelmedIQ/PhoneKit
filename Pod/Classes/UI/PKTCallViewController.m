@@ -153,15 +153,15 @@
     
     //reload mainPad buttons whenever muted or speakerEnabled changes,
     //or if viewWillAppear fires
-    [[[RACSignal
-    combineLatest:@[RACObserve([PKTPhone sharedPhone], muted),
-                    RACObserve([PKTPhone sharedPhone], speakerEnabled)]]
-            merge:[self rac_signalForSelector:@selector(viewWillAppear:)]]
-    subscribeNext:^(RACTuple *next) {
+//    [[[RACSignal
+//    combineLatest:@[RACObserve([PKTPhone sharedPhone], muted),
+//                    RACObserve([PKTPhone sharedPhone], speakerEnabled)]]
+//            merge:[self rac_signalForSelector:@selector(viewWillAppear:)]]
+//    subscribeNext:^(RACTuple *next) {
         //reload buttons
         self.mainPad.buttons = [self mainPadButtons];
         [self.mainPad layoutSubviews];
-    }];
+//    }];
 }
 
 - (NSArray *)mainPadButtons
