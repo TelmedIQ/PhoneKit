@@ -250,9 +250,13 @@
     if (dialPad == self.mainPad) {
         if ([text isEqual:kCallingViewMuteInput]) {
             [PKTPhone sharedPhone].muted = ![PKTPhone sharedPhone].muted;
+            self.mainPad.buttons = [self mainPadButtons];
+            [self.mainPad layoutSubviews];
         }
         else if ([text isEqual:kCallingViewSpeakerInput]) {
             [PKTPhone sharedPhone].speakerEnabled = ![PKTPhone sharedPhone].speakerEnabled;
+            self.mainPad.buttons = [self mainPadButtons];
+            [self.mainPad layoutSubviews];
         }
         else if ([text isEqualToString:kCallingViewKeypadInput]) {
             [self switchToPad:self.keyPad animated:YES];
