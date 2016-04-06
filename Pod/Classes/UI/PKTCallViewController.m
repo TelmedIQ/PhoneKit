@@ -2,8 +2,8 @@
 
 #import "PKTPhone.h"
 #import "JCPadButton.h"
-#import "FontasticIcons.h"
 #import "UIView+FrameAccessor.h"
+#import "ionicons/IonIcons.h"
 
 #define kCallingViewMuteInput @"M"
 #define kCallingViewKeypadInput @"K"
@@ -57,7 +57,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	
+    
     self.incomingPad.buttons = [self incomingPadButtons];
     self.keyPad.buttons      = [self keyPadButtons];
     [self setupDialPads];
@@ -93,7 +93,7 @@
     if (incoming && !self.mainText.length) {
         self.mainText = params[@"From"] ?: @"unknown";
     }
- 	self.callStatusLabel.text = incoming ? @"incoming call" : @"connecting...";
+    self.callStatusLabel.text = incoming ? @"incoming call" : @"connecting...";
     [self switchToPad:incoming ? self.incomingPad : self.mainPad
              animated:NO];
     
@@ -137,12 +137,12 @@
         dialPad.delegate         = self;
         
         [[RACObserve(self, backgroundImage)
-         ignore:nil]
+          ignore:nil]
          subscribeNext:^(UIImage *bg) {
-            UIImageView* backgroundView = [[UIImageView alloc] initWithImage:bg];
-            backgroundView.contentMode  = UIViewContentModeScaleAspectFill;
-            [dialPad setBackgroundView:backgroundView];
-        }];
+             UIImageView* backgroundView = [[UIImageView alloc] initWithImage:bg];
+             backgroundView.contentMode  = UIViewContentModeScaleAspectFill;
+             [dialPad setBackgroundView:backgroundView];
+         }];
         
         [self.view addSubview:dialPad];
     }
@@ -153,15 +153,15 @@
     
     //reload mainPad buttons whenever muted or speakerEnabled changes,
     //or if viewWillAppear fires
-//    [[[RACSignal
-//    combineLatest:@[RACObserve([PKTPhone sharedPhone], muted),
-//                    RACObserve([PKTPhone sharedPhone], speakerEnabled)]]
-//            merge:[self rac_signalForSelector:@selector(viewWillAppear:)]]
-//    subscribeNext:^(RACTuple *next) {
-        //reload buttons
-        self.mainPad.buttons = [self mainPadButtons];
-        [self.mainPad layoutSubviews];
-//    }];
+    //    [[[RACSignal
+    //    combineLatest:@[RACObserve([PKTPhone sharedPhone], muted),
+    //                    RACObserve([PKTPhone sharedPhone], speakerEnabled)]]
+    //            merge:[self rac_signalForSelector:@selector(viewWillAppear:)]]
+    //    subscribeNext:^(RACTuple *next) {
+    //reload buttons
+    self.mainPad.buttons = [self mainPadButtons];
+    [self.mainPad layoutSubviews];
+    //    }];
 }
 
 - (NSArray *)mainPadButtons
@@ -170,19 +170,26 @@
                         kCallingViewKeypadInput,
                         kCallingViewSpeakerInput,
                         kCallingViewHangupInput];
-    NSArray *icons = @[[PKTPhone sharedPhone].muted ? [FIFontAwesomeIcon microphoneIcon] : [FIFontAwesomeIcon microphoneOffIcon],
-                       [FIFontAwesomeIcon thIcon],
-                       [PKTPhone sharedPhone].speakerEnabled ? [FIFontAwesomeIcon volumeDownIcon] : [FIFontAwesomeIcon volumeUpIcon],
-                       [FIFontAwesomeIcon phoneIcon]];
+    
+    UIImage *microphoneIcon = [IonIcons imageWithIcon:ion_ios_mic iconColor:[UIColor whiteColor] iconSize:40.0 imageSize:CGSizeMake(50, 50)];
+    UIImage *microphoneOffIcon = [IonIcons imageWithIcon:ion_ios_mic_off iconColor:[UIColor whiteColor] iconSize:40.0 imageSize:CGSizeMake(50, 50)];
+    UIImage *thIcon = [IonIcons imageWithIcon:ion_ios_keypad iconColor:[UIColor whiteColor] iconSize:40.0 imageSize:CGSizeMake(50, 50)];
+    UIImage *volumeDownIcon = [IonIcons imageWithIcon:ion_ios_volume_low iconColor:[UIColor whiteColor] iconSize:40.0 imageSize:CGSizeMake(50, 50)];
+    UIImage *volumeUpIcon = [IonIcons imageWithIcon:ion_ios_volume_high iconColor:[UIColor whiteColor] iconSize:40.0 imageSize:CGSizeMake(50, 50)];
+    UIImage *phoneIcon = [IonIcons imageWithIcon:ion_ios_telephone iconColor:[UIColor whiteColor] iconSize:40.0 imageSize:CGSizeMake(50, 50)];
+    
+    NSArray *icons = @[[PKTPhone sharedPhone].muted ? microphoneIcon : microphoneOffIcon,
+                       thIcon,
+                       [PKTPhone sharedPhone].speakerEnabled ? volumeDownIcon : volumeUpIcon,
+                       phoneIcon];
     
     NSMutableArray *buttons = [NSMutableArray array];
     
     [inputs enumerateObjectsUsingBlock:^(NSString *input, NSUInteger i, BOOL *stop) {
-        FIIconView *iconView     = [[FIIconView alloc] initWithFrame:CGRectMake(0, 0, 65, 65)];
-        iconView.backgroundColor = [UIColor clearColor];
-        iconView.icon            = icons[i];
-        iconView.padding         = 15;
-        iconView.iconColor       = [UIColor whiteColor];
+        UIImageView *iconView       = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 65, 65)];
+        iconView.backgroundColor    = [UIColor clearColor];
+        iconView.image              = icons[i];
+        
         JCPadButton *button      = [[JCPadButton alloc] initWithInput:input iconView:iconView subLabel:@""];
         
         if ([input isEqual:kCallingViewHangupInput] ||
@@ -200,12 +207,11 @@
 
 - (NSArray *)keyPadButtons
 {
-    FIIconView *iconView     = [[FIIconView alloc] initWithFrame:CGRectMake(0, 0, 65, 65)];
-    iconView.backgroundColor = [UIColor clearColor];
-    iconView.icon            = [FIFontAwesomeIcon replyIcon];
-    iconView.padding         = 15;
-    iconView.iconColor       = [UIColor whiteColor];
-
+    UIImageView *iconView       = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 65, 65)];
+    iconView.backgroundColor    = [UIColor clearColor];
+    iconView.image              = [IonIcons imageWithIcon:ion_reply iconColor:[UIColor whiteColor] iconSize:40.0 imageSize:CGSizeMake(50, 50)];
+    
+    
     JCPadButton *backButton  = [[JCPadButton alloc] initWithInput:kKeyboardViewBackInput iconView:iconView subLabel:@""];
     
     return [[JCDialPad defaultButtons] arrayByAddingObject:backButton];
@@ -216,20 +222,21 @@
     NSArray *inputs = @[kCallingViewAcceptInput,
                         kCallingViewIgnoreInput,
                         kCallingViewHangupInput];
-    NSArray *icons = @[[FIFontAwesomeIcon phoneIcon],
-                       [FIEntypoIcon muteIcon],
-                       [FIFontAwesomeIcon phoneIcon]];
+    
+    NSArray *icons = @[
+                       [IonIcons imageWithIcon:ion_ios_telephone iconColor:[UIColor whiteColor] iconSize:40.0 imageSize:CGSizeMake(50, 50)],
+                       [IonIcons imageWithIcon:ion_ios_volume_low iconColor:[UIColor whiteColor] iconSize:40.0 imageSize:CGSizeMake(50, 50)],
+                       [IonIcons imageWithIcon:ion_ios_telephone iconColor:[UIColor whiteColor] iconSize:40.0 imageSize:CGSizeMake(50, 50)]
+                       ];
     
     NSMutableArray *buttons = [NSMutableArray array];
     
     [inputs enumerateObjectsUsingBlock:^(NSString *input, NSUInteger i, BOOL *stop) {
-        FIIconView *iconView     = [[FIIconView alloc] initWithFrame:CGRectMake(0, 0, 65, 65)];
-        iconView.backgroundColor = [UIColor clearColor];
-        iconView.icon            = icons[i];
-        iconView.padding         = 15;
-        iconView.iconColor       = [UIColor whiteColor];
+        UIImageView *iconView       = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 65, 65)];
+        iconView.backgroundColor    = [UIColor clearColor];
+        iconView.image              = icons[i];
         JCPadButton *button      = [[JCPadButton alloc] initWithInput:input iconView:iconView subLabel:@""];
-
+        
         UIColor *buttonColor     = [UIColor colorWithRed:0.488 green:0.478 blue:0.504 alpha:1.000];
         
         if ([input isEqual:kCallingViewAcceptInput]) {
@@ -316,15 +323,15 @@
     
     RACSignal *statusText =
     [RACObserve([PKTPhone sharedPhone], callDuration)
-    map:^NSString *(NSNumber *duration){
-        long dur      = [duration longValue];
-        BOOL hasHours = dur / 3600 > 0;
-        if (hasHours) {
-            return [NSString stringWithFormat:@"%lu:%02lu:%02lu", dur/3600, (dur % 3600)/60, dur % 60];
-        } else {
-            return [NSString stringWithFormat:@"%02lu:%02lu", dur/60, dur % 60];
-        }
-    }];
+     map:^NSString *(NSNumber *duration){
+         long dur      = [duration longValue];
+         BOOL hasHours = dur / 3600 > 0;
+         if (hasHours) {
+             return [NSString stringWithFormat:@"%lu:%02lu:%02lu", dur/3600, (dur % 3600)/60, dur % 60];
+         } else {
+             return [NSString stringWithFormat:@"%02lu:%02lu", dur/60, dur % 60];
+         }
+     }];
     RAC(self.callStatusLabel, text) = statusText;
 }
 

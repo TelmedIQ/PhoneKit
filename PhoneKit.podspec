@@ -9,7 +9,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "PhoneKit"
-  s.version          = "0.2.2"
+  s.version          = "0.2.3"
   s.summary          = "An extension of TwilioSDK for easily making & receiving VoIP calls from inside your iOS app!"
   s.homepage         = "https://github.com/sidmclaughlin/PhoneKit"
   s.license          = 'MIT'
@@ -27,8 +27,8 @@ Pod::Spec.new do |s|
 
   s.subspec "UI" do |ss|
     ss.dependency 'PhoneKit/Core'
-    # ss.dependency 'JCDialPad'
-    ss.dependency 'FontasticIcons'
+    ss.dependency 'JCDialPad'
+    ss.dependency 'ionicons'
     ss.source_files = 'Pod/Classes/UI/'
   end
 end
