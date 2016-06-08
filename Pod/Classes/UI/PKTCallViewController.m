@@ -70,10 +70,6 @@
     UIViewController *rootViewController = (UITabBarController *)app.keyWindow.rootViewController;
     if (rootViewController.presentedViewController == self) {
         return;
-    } else if (rootViewController.presentedViewController) {
-        [rootViewController dismissViewControllerAnimated:YES completion:^{
-            [self present];
-        }];
     }
     
     //take snapshot of root view and set as background:
@@ -82,7 +78,11 @@
     self.backgroundImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
-    [rootViewController presentViewController:self animated:YES completion:nil];
+    if (rootViewController.presentedViewController) {
+        [rootViewController.presentedViewController presentViewController:self animated:YES completion:nil];
+    } else {
+        [rootViewController presentViewController:self animated:YES completion:nil];
+    }
 }
 
 #pragma mark - PKTPhoneDelegate
